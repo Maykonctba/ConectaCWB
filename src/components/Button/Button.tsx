@@ -1,28 +1,66 @@
 import React from 'react';
-import {TouchableOpacity} from 'react-native';
+import {ActivityIndicator} from 'react-native';
 import {Text} from '../Text/Text';
-import {useTheme} from '@shopify/restyle';
-import {Theme} from '../../theme/theme';
+import {TouchableOpacityBox, TouchableOpacityBoxProps} from '../Box/Box';
+import {buttonPresets} from './buttonPresets';
 
-interface ButtonProps {
+export type ButtonPreset = 'primary' | 'outline' | 'secondary';
+
+// const buttonPresets: Record<ButtonPreset, ButtonUI> = {
+//   primary: {
+//     container: {
+//       backgroundColor: 'primary',
+//     },
+//     content: 'primaryContrast',
+//   },
+
+//   outline: {
+//     container: {
+//       borderWidth: 1,
+//       borderColor: 'primary',
+//     },
+//     content: 'primary',
+//   },
+
+//   secondary: {
+//     container: {
+//       backgroundColor: 'carrotSecondary',
+//     },
+//     content: 'primaryContrast',
+//   },
+// };
+
+interface ButtonProps extends TouchableOpacityBoxProps {
   title: string;
+  loading?: boolean;
+  preset?: ButtonPreset;
 }
 
-export function Button({title}: ButtonProps) {
-  const {colors} = useTheme<Theme>();
+export function Button({
+  title,
+  loading,
+  preset = 'primary',
+  ...touchableOpacityBoxProps
+}: ButtonProps) {
+  const buttonPreset = buttonPresets[preset];
 
   return (
-    <TouchableOpacity
-      style={{
-        paddingHorizontal: 20,
-        paddingVertical: 14,
-        backgroundColor: colors.carrotSecondary,
-        alignItems: 'center',
-        borderRadius: 16,
-      }}>
-      <Text preset="paragraphMedium" bold style={{color: '#fff'}}>
-        {title}
-      </Text>
-    </TouchableOpacity>
+    <TouchableOpacityBox
+      //backgroundColor="buttonPrimary"
+      paddingHorizontal="s20"
+      height={50}
+      alignItems="center"
+      justifyContent="center"
+      borderRadius="s16"
+      {...buttonPreset.container}
+      {...touchableOpacityBoxProps}>
+      {loading ? (
+        <ActivityIndicator />
+      ) : (
+        <Text preset="paragraphMedium" bold color={buttonPreset.content}>
+          {title}
+        </Text>
+      )}
+    </TouchableOpacityBox>
   );
 }
